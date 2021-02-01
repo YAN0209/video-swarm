@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pers.yan.video.common.common.ResponseResult;
 import pers.yan.video.gateway.pojo.entity.Permission;
 import pers.yan.video.gateway.pojo.entity.Role;
-import pers.yan.video.gateway.service.fallback.AuthRemoteFallBack;
+import pers.yan.video.gateway.service.fallback.AccessRemoteFallBack;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import java.util.List;
  * @author likaiyan
  * @date 2020/9/1 9:51 上午
  */
-@FeignClient(value = "video-security", fallback = AuthRemoteFallBack.class)
-@RequestMapping("/auth")
-public interface AuthRemote {
+@FeignClient(value = "video-security", fallback = AccessRemoteFallBack.class)
+@RequestMapping("/access")
+public interface AccessRemote {
 
     /**
      * 获取用户角色

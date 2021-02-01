@@ -1,10 +1,9 @@
 package pers.yan.video.gateway.service.fallback;
 
-import pers.yan.video.common.common.ResponseCode;
 import pers.yan.video.common.common.ResponseResult;
 import pers.yan.video.gateway.pojo.entity.Permission;
 import pers.yan.video.gateway.pojo.entity.Role;
-import pers.yan.video.gateway.service.AuthRemote;
+import pers.yan.video.gateway.service.AccessRemote;
 
 import java.util.List;
 
@@ -13,20 +12,20 @@ import java.util.List;
  * @author likaiyan
  * @date 2020/9/1 9:53 上午
  */
-public class AuthRemoteFallBack implements AuthRemote {
+public class AccessRemoteFallBack implements AccessRemote {
 
     @Override
     public ResponseResult<List<Role>> getRoles(int userId) {
-        return ResponseResult.exception(ResponseCode.FAILED, "exception.ServiceNoResponse");
+        return null;
     }
 
     @Override
     public ResponseResult<List<Permission>> getPermissionsByUser(int userId) {
-        return ResponseResult.exception(ResponseCode.FAILED, "exception.ServiceNoResponse");
+        return null;
     }
 
     @Override
     public ResponseResult<List<Permission>> getPermissionsByRole(int roleId) {
-        return ResponseResult.exception(ResponseCode.FAILED, "exception.ServiceNoResponse");
+        return null;
     }
 }

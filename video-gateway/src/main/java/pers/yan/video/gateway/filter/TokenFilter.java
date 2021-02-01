@@ -18,7 +18,7 @@ import org.springframework.web.server.ServerWebExchange;
 import pers.yan.video.common.common.ResponseResult;
 import pers.yan.video.common.utils.JwtTokenUtil;
 import pers.yan.video.gateway.pojo.entity.Permission;
-import pers.yan.video.gateway.service.AuthRemote;
+import pers.yan.video.gateway.service.AccessRemote;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -38,13 +38,24 @@ public class TokenFilter implements GlobalFilter, Ordered {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private AuthRemote authRemote;
+    private AccessRemote accessRemote;
+
+    public static final String PATTERN = "/auth/**";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
+        String path = request.getURI().getPath();
+        String realPath = path.substring(path.indexOf("/", path.indexOf("/") + 1));
         String token = jwtTokenUtil.getToken(request);
+
+        AntPathMatcher matcher = new AntPathMatcher();
+
+        //auth开头的路径直接放行
+        if (matcher.match(PATTERN, realPath)) {
+            return chain.filter(exchange);
+        }
 
         //检查token是否合法
         if (StringUtils.isEmpty(token) || !jwtTokenUtil.validateToken(token)) {
@@ -54,12 +65,10 @@ public class TokenFilter implements GlobalFilter, Ordered {
         int userId = jwtTokenUtil.getUserIdFromToken(token);
 
         //校验url权限
-        List<Permission> permissions = authRemote.getPermissionsByUser(userId).getData();
-        if(!CollectionUtils.isEmpty(permissions)){
-            AntPathMatcher matcher = new AntPathMatcher();
-            for(Permission permission : permissions){
-                String path = request.getURI().getPath();
-                if(matcher.match(permission.getUri(), path.substring(path.indexOf("/", 1)))){
+        List<Permission> permissions = accessRemote.getPermissionsByUser(userId).getData();
+        if (!CollectionUtils.isEmpty(permissions)) {
+            for (Permission permission : permissions) {
+                if (matcher.match(permission.getUri(), realPath)){
                     request.mutate().header("userId", String.valueOf(userId));
                     return chain.filter(exchange);
                 }
@@ -75,11 +84,12 @@ public class TokenFilter implements GlobalFilter, Ordered {
         return -100;
     }
 
-    private Mono<Void> doResponse(ServerHttpResponse response, ResponseResult responseResult) {
+    private Mono<Void> doResponse(ServerHttpResponse response, ResponseResult<?> responseResult) {
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
         byte[] bytes = new Gson().toJson(responseResult).getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bytes);
         return response.writeWith(Flux.just(buffer));
     }
+
 }

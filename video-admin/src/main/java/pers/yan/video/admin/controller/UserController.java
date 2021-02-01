@@ -3,12 +3,12 @@ package pers.yan.video.admin.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pers.yan.video.admin.common.ResponseResult;
 import pers.yan.video.admin.pojo.dto.AddUserParam;
 import pers.yan.video.admin.pojo.dto.PageDto;
 import pers.yan.video.admin.pojo.dto.UpdateUserParam;
 import pers.yan.video.admin.pojo.entity.User;
 import pers.yan.video.admin.service.UserService;
+import pers.yan.video.common.common.ResponseResult;
 
 import javax.validation.Valid;
 import java.util.List;

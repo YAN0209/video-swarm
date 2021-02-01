@@ -9,7 +9,7 @@ import pers.yan.video.admin.pojo.dto.UserRoleRelateDto;
  * @author likaiyan
  * @date 2020/8/31 3:40 下午
  */
-public interface AuthService {
+public interface AccessService {
 
     /**
      * 添加用户角色

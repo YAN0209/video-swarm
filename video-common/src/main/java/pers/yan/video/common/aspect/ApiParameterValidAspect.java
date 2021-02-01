@@ -11,6 +11,8 @@ import org.springframework.validation.ObjectError;
 import pers.yan.video.common.common.ResponseCode;
 import pers.yan.video.common.exception.ApiRuntimeException;
 
+import java.util.StringJoiner;
+
 /**
  * @author likaiyan
  * @date 2020/6/11 5:36 下午
@@ -22,18 +24,18 @@ public class ApiParameterValidAspect {
     @Before("execution(* pers.yan.video.*.controller.*.*(..)) && args(.., result))")
     public void doBefore(JoinPoint joinPoint, BindingResult result) throws ApiRuntimeException {
         if (result.hasErrors()) {
-            StringBuilder builder = new StringBuilder();
+            StringJoiner joiner = new StringJoiner(",");
             for (ObjectError error : result.getAllErrors()) {
                 if (error instanceof FieldError) {
+                    StringBuilder builder = new StringBuilder();
                     builder.append("[");
                     builder.append(((FieldError) error).getField());
                     builder.append("]");
                     builder.append(error.getDefaultMessage());
-                    builder.append(",");
+                    joiner.add(builder);
                 }
             }
-            builder.deleteCharAt(builder.length() - 1);
-            throw new ApiRuntimeException(ResponseCode.VALIDATE_FAILED, builder.toString());
+            throw new ApiRuntimeException(ResponseCode.VALIDATE_FAILED, joiner.toString());
         }
 
     }

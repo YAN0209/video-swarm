@@ -12,6 +12,7 @@ import pers.yan.video.admin.pojo.dto.PageDto;
 import pers.yan.video.admin.pojo.dto.UpdateUserParam;
 import pers.yan.video.admin.pojo.entity.User;
 import pers.yan.video.admin.service.UserService;
+import pers.yan.video.common.exception.ApiRuntimeException;
 
 /**
  * 用户service
@@ -32,7 +33,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void updateUser(UpdateUserParam updateUserParam) {
-        User user = new User();
+        User user = this.getById(updateUserParam.getId());
+        if(user == null){
+            throw new ApiRuntimeException("exception.UserNoFound");
+        }
         BeanUtils.copyProperties(updateUserParam, user);
         this.updateById(user);
     }
@@ -49,6 +53,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         BeanUtils.copyProperties(page, pageDto);
         return pageDto;
     }
-
 
 }

@@ -3,11 +3,9 @@ package pers.yan.video.security.service;
 import pers.yan.video.security.pojo.dto.LoginParam;
 import pers.yan.video.security.pojo.dto.ModifyParam;
 import pers.yan.video.security.pojo.dto.RegisterParam;
-import pers.yan.video.security.pojo.entity.Permission;
-import pers.yan.video.security.pojo.entity.Role;
+import pers.yan.video.security.pojo.dto.ValidateParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 角色权限相关service
@@ -16,30 +14,6 @@ import java.util.List;
  * @date 2020/8/31 1:56 下午
  */
 public interface AuthService {
-
-    /**
-     * 获取角色
-     *
-     * @param userId 用户id
-     * @return 角色列表
-     */
-    List<Role> getRoles(int userId);
-
-    /**
-     * 获取用户权限
-     *
-     * @param userId 用户id
-     * @return 权限列表
-     */
-    List<Permission> getPermissionsByUser(int userId);
-
-    /**
-     * 获取角色权限
-     *
-     * @param roleId 角色id
-     * @return 权限列表
-     */
-    List<Permission> getPermissionsByRole(int roleId);
 
     /**
      * 登录
@@ -56,6 +30,13 @@ public interface AuthService {
      * @return 用户id
      */
     int register(RegisterParam registerParam);
+
+    /**
+     * 验证码
+     * @param validateParam 校验参数
+     * @return boolean
+     */
+    boolean validateCode(ValidateParam validateParam);
 
     /**
      * 修改信息

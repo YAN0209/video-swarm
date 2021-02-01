@@ -8,13 +8,10 @@ import pers.yan.video.common.common.ResponseResult;
 import pers.yan.video.security.pojo.dto.LoginParam;
 import pers.yan.video.security.pojo.dto.ModifyParam;
 import pers.yan.video.security.pojo.dto.RegisterParam;
-import pers.yan.video.security.pojo.entity.Permission;
-import pers.yan.video.security.pojo.entity.Role;
 import pers.yan.video.security.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 权限相关接口
@@ -75,36 +72,6 @@ public class AuthController {
     @GetMapping("/refreshtoken")
     public ResponseResult<String> refreshToken(HttpServletRequest request){
         return ResponseResult.success(authService.refreshToken(request));
-    }
-
-    /**
-     * 获取用户角色
-     * @param userId 用户id
-     * @return 角色列表
-     */
-    @GetMapping("/user/{userId}/roles")
-    public ResponseResult<List<Role>> getRoles(@PathVariable int userId) {
-        return ResponseResult.success(authService.getRoles(userId));
-    }
-
-    /**
-     * 获取用户权限
-     * @param userId 用户id
-     * @return 权限列表
-     */
-    @GetMapping("/user/{userId}/permissions")
-    public ResponseResult<List<Permission>> getPermissionsByUser(@PathVariable int userId) {
-        return ResponseResult.success(authService.getPermissionsByUser(userId));
-    }
-
-    /**
-     * 获取角色权限
-     * @param roleId 角色id
-     * @return 权限列表
-     */
-    @GetMapping("/role/{roleId}/permissions")
-    public ResponseResult<List<Permission>> getPermissionsByRole(@PathVariable int roleId) {
-        return ResponseResult.success(authService.getPermissionsByRole(roleId));
     }
 
 }

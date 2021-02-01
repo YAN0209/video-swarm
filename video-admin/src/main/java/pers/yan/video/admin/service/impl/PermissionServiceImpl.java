@@ -18,8 +18,6 @@ import pers.yan.video.admin.pojo.entity.RolePermissionRelation;
 import pers.yan.video.admin.service.PermissionService;
 import pers.yan.video.common.exception.ApiRuntimeException;
 
-import java.util.Optional;
-
 /**
  * 权限service
  *
@@ -45,7 +43,10 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
 
     @Override
     public void updatePermission(UpdatePermissionParam updatePermissionParam) {
-        Permission permission = new Permission();
+        Permission permission = this.getById(updatePermissionParam.getId());
+        if(permission == null){
+            throw new ApiRuntimeException("exception.PermissionNoFound");
+        }
         BeanUtils.copyProperties(updatePermissionParam, permission);
         this.updateById(permission);
     }
@@ -63,10 +64,6 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
 
     @Override
     public void addRolePermission(RolePermissionRelateDto rolePermissionRelateDto) {
-        Optional.ofNullable(roleMapper.selectById(rolePermissionRelateDto.getRoleId()))
-                .orElseThrow(() -> new ApiRuntimeException("exception.RoleNoFound"));
-        Optional.ofNullable(this.getById(rolePermissionRelateDto.getPermissionId()))
-                .orElseThrow(() -> new ApiRuntimeException("exception.PermissionNoFound"));
         RolePermissionRelation rolePermissionRelation = new RolePermissionRelation();
         BeanUtils.copyProperties(rolePermissionRelateDto, rolePermissionRelation);
         rolePermissionMapper.insert(rolePermissionRelation);

@@ -18,8 +18,6 @@ import pers.yan.video.admin.pojo.entity.UserRoleRelation;
 import pers.yan.video.admin.service.RoleService;
 import pers.yan.video.common.exception.ApiRuntimeException;
 
-import java.util.Optional;
-
 /**
  * 角色service
  *
@@ -45,7 +43,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public void updateRole(UpdateRoleParam updateRoleParam) {
-        Role role = new Role();
+        Role role = this.getById(updateRoleParam.getId());
+        if(role == null){
+            throw new ApiRuntimeException("exception.RoleNoFound");
+        }
         BeanUtils.copyProperties(updateRoleParam, role);
         this.updateById(role);
     }
@@ -63,10 +64,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public void addUserRole(UserRoleRelateDto userRoleRelateDto) {
-        Optional.ofNullable(userMapper.selectById(userRoleRelateDto.getUserId()))
-                .orElseThrow(() -> new ApiRuntimeException("exception.UserNoFound"));
-        Optional.ofNullable(this.getById(userRoleRelateDto.getRoleId()))
-                .orElseThrow(() -> new ApiRuntimeException("exception.RoleNoFound"));
         UserRoleRelation userRoleRelation = new UserRoleRelation();
         BeanUtils.copyProperties(userRoleRelateDto, userRoleRelation);
         userRoleMapper.insert(userRoleRelation);
